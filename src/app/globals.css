@@ -1,0 +1,159 @@
+@import "tailwindcss";
+
+@theme {
+  /* Farger – nordisk almanakk-palett */
+  --color-cream: #f8f5f0;
+  --color-cream-deep: #f5f1ea;
+  --color-paper: #fffdf9;
+  --color-ink: #2b2523;
+  --color-ink-soft: #6b615b;
+  --color-coral: #d98484;
+  --color-coral-deep: #c96b6b;
+  --color-mustard: #d9a441;
+  --color-mustard-deep: #c08f2e;
+  --color-teal: #73c4c8;
+  --color-teal-deep: #4ea5aa;
+  --color-forest: #6d8b63;
+  --color-forest-deep: #5a7551;
+  --color-line: #e3dccf;
+
+  /* Typografi */
+  --font-display: var(--font-fraunces), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-source), system-ui, -apple-system, sans-serif;
+
+  /* Avrunding */
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Subtil papirfølelse */
+    background-image: radial-gradient(
+        circle at 18% 12%,
+        rgba(217, 164, 65, 0.05),
+        transparent 42%
+      ),
+      radial-gradient(
+        circle at 85% 8%,
+        rgba(115, 196, 200, 0.06),
+        transparent 40%
+      );
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background-color: var(--color-mustard);
+    color: var(--color-ink);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-teal-deep);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Tynn prikkelinje som i en kalenderblokk */
+  .rule-dotted {
+    background-image: linear-gradient(
+      to right,
+      var(--color-line) 0 6px,
+      transparent 6px 12px
+    );
+    background-repeat: repeat-x;
+    background-size: 12px 2px;
+    background-position: left center;
+    height: 2px;
+  }
+
+  /* Papirkort med tynn kant */
+  .paper {
+    background-color: var(--color-paper);
+    border: 1.5px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  /* Redaksjonell brødtekst */
+  .prose-content h2 {
+    font-size: 1.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .prose-content h3 {
+    font-size: 1.3rem;
+    margin-top: 1.75rem;
+    margin-bottom: 0.25rem;
+  }
+  .prose-content p {
+    color: var(--color-ink-soft);
+  }
+  .prose-content a {
+    color: var(--color-coral-deep);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
+  .prose-content ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .prose-content ul li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--color-ink-soft);
+    margin-bottom: 0.4rem;
+  }
+  .prose-content ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background-color: var(--color-mustard);
+  }
+  .prose-content strong {
+    color: var(--color-ink);
+  }
+}
+
+/* Respekter brukere som vil ha mindre bevegelse */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
