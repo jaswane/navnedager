@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import CalendarStrip from "@/components/CalendarStrip";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
+import { CalendarMark } from "@/components/illustrations";
 import {
   osloToday,
   addDays,
   isoWeek,
   weekdayName,
   formatDayMonth,
+  cap,
   dateSlug,
 } from "@/lib/dates";
 import { namesForDate } from "@/lib/navnedager";
@@ -26,10 +29,10 @@ export const metadata: Metadata = buildMetadata({
 
 export default function ThisWeekPage() {
   const today = osloToday();
-  // Finn mandag i inneværende ISO-uke.
   const todayDate = new Date(Date.UTC(today.year, today.month - 1, today.day));
-  const isoDow = todayDate.getUTCDay() || 7; // 1 = mandag
+  const isoDow = todayDate.getUTCDay() || 7;
   const monday = addDays(today.year, today.month, today.day, 1 - isoDow);
+  const sunday = addDays(monday.year, monday.month, monday.day, 6);
   const week = isoWeek(monday.year, monday.month, monday.day);
 
   const days = Array.from({ length: 7 }, (_, i) => {
@@ -44,14 +47,16 @@ export default function ThisWeekPage() {
   });
 
   const listItems = days.flatMap((d) =>
-    d.names.map((n) => ({
-      name: n,
-      path: `/dato/${dateSlug(d.month, d.day)}`,
-    }))
+    d.names.map((n) => ({ name: n, path: `/dato/${dateSlug(d.month, d.day)}` }))
   );
 
+  const crumbs = [
+    { name: "Forside", path: "/" },
+    { name: "Denne uken", path: "/denne-uken" },
+  ];
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
@@ -59,62 +64,54 @@ export default function ThisWeekPage() {
             description: "Alle navnedager denne uken.",
             path: "/denne-uken",
           }),
-          breadcrumbSchema([
-            { name: "Forside", path: "/" },
-            { name: "Denne uken", path: "/denne-uken" },
-          ]),
+          breadcrumbSchema(crumbs),
           itemListSchema({ name: `Navnedager i uke ${week}`, items: listItems }),
         ]}
       />
-      <Breadcrumbs
-        items={[
-          { name: "Forside", path: "/" },
-          { name: "Denne uken", path: "/denne-uken" },
-        ]}
-      />
+      <Breadcrumbs items={crumbs} />
 
-      <p className="text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
-        Uke {week}
-      </p>
-      <h1 className="mt-3 font-display text-5xl font-semibold sm:text-7xl">
-        Navnedager denne uken
-      </h1>
-      <p className="mt-5 max-w-xl text-xl text-ink-soft">
-        Fra mandag {formatDayMonth(monday.month, monday.day)} til søndag{" "}
-        {formatDayMonth(
-          addDays(monday.year, monday.month, monday.day, 6).month,
-          addDays(monday.year, monday.month, monday.day, 6).day
-        )}
-        .
-      </p>
+      <div className="mt-6">
+        <PageHeader
+          eyebrow={`Uke ${week}`}
+          title="Navnedager denne uken"
+          lead={`Fra mandag ${formatDayMonth(monday.month, monday.day)} til søndag ${formatDayMonth(sunday.month, sunday.day)}.`}
+          icon={<CalendarMark className="h-8 w-8" />}
+        />
+      </div>
 
       <section className="mt-10">
-        <CalendarStrip start={monday} count={7} highlightFirst={false} />
+        <CalendarStrip
+          start={monday}
+          count={7}
+          highlight={{ month: today.month, day: today.day }}
+        />
       </section>
 
-      {/* Lesbar dag-for-dag liste, bra for både folk og AI. */}
-      <section className="mt-14">
-        <h2 className="mb-6 font-display text-3xl font-semibold">Dag for dag</h2>
-        <ul className="divide-y divide-line overflow-hidden rounded-2xl border-2 border-ink bg-paper">
+      {/* Dag for dag */}
+      <section className="mt-12">
+        <h2 className="mb-4 text-center text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
+          Dag for dag
+        </h2>
+        <ul className="paper divide-y divide-line overflow-hidden">
           {days.map((d) => (
             <li
               key={`${d.month}-${d.day}`}
               className={`flex flex-col gap-1 px-5 py-4 sm:flex-row sm:items-center sm:justify-between ${
-                d.isToday ? "bg-mustard/15" : ""
+                d.isToday ? "bg-mustard/10" : ""
               }`}
             >
               <Link
                 href={`/dato/${dateSlug(d.month, d.day)}`}
-                className="font-semibold capitalize"
+                className="font-semibold"
               >
-                {d.weekday} {formatDayMonth(d.month, d.day)}
+                {cap(d.weekday)} {formatDayMonth(d.month, d.day)}
                 {d.isToday && (
-                  <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-xs font-bold text-cream">
+                  <span className="ml-2 rounded-full bg-hero px-2 py-0.5 text-xs font-bold text-cream">
                     I dag
                   </span>
                 )}
               </Link>
-              <span className="font-display text-lg">
+              <span className="text-lg">
                 {d.names.length > 0 ? (
                   d.names.map((n, i) => (
                     <span key={n}>

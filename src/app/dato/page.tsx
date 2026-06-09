@@ -2,9 +2,10 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import DatePicker from "@/components/DatePicker";
+import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
 import { CalendarMark } from "@/components/illustrations";
-import { MONTHS_NB } from "@/lib/dates";
+import { MONTHS_NB, monthNameCap } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 
@@ -22,7 +23,7 @@ export default function DateSearchPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
@@ -35,35 +36,31 @@ export default function DateSearchPage() {
       />
       <Breadcrumbs items={crumbs} />
 
-      <div className="flex items-center gap-2 text-teal-deep">
-        <CalendarMark className="h-7 w-7" />
-        <span className="text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
-          Dato
-        </span>
+      <div className="mt-6">
+        <PageHeader
+          eyebrow="Dato"
+          title="Søk etter dato"
+          lead="Velg en dag og måned for å se hvem som har navnedag."
+          icon={<CalendarMark className="h-8 w-8" />}
+        />
       </div>
-      <h1 className="mt-3 font-display text-5xl font-semibold sm:text-7xl">
-        Søk etter dato
-      </h1>
-      <p className="mt-4 max-w-xl text-xl text-ink-soft">
-        Velg en dag og måned for å se hvem som har navnedag.
-      </p>
 
-      <div className="mt-8 paper p-6 sm:p-8">
+      <div className="paper mx-auto mt-8 max-w-lg p-6">
         <DatePicker />
       </div>
 
-      <section className="mt-12">
-        <h2 className="mb-4 font-display text-2xl font-semibold">
+      <section className="mt-10">
+        <h2 className="mb-4 text-center text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
           Eller velg en måned
         </h2>
-        <ul className="flex flex-wrap gap-2.5">
-          {MONTHS_NB.map((m) => (
+        <ul className="flex flex-wrap justify-center gap-2.5">
+          {MONTHS_NB.map((m, i) => (
             <li key={m}>
               <Link
                 href={`/maned/${m}`}
-                className="inline-block rounded-full border-2 border-ink bg-cream-deep px-4 py-1.5 font-semibold capitalize transition-colors hover:bg-teal"
+                className="inline-block rounded-full border border-line bg-paper px-4 py-1.5 font-semibold transition-colors hover:border-coral"
               >
-                {m}
+                {monthNameCap(i + 1)}
               </Link>
             </li>
           ))}

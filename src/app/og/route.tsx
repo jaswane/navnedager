@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Navnedager.no – Hvem har navnedag i dag?";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+export const dynamic = "force-static";
 
-export default function OpengraphImage() {
+const size = { width: 1200, height: 630 };
+
+export function GET() {
   return new ImageResponse(
     (
       <div
@@ -20,7 +20,6 @@ export default function OpengraphImage() {
           position: "relative",
         }}
       >
-        {/* dekor-prikker */}
         <div
           style={{
             position: "absolute",

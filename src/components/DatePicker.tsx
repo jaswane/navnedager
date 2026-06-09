@@ -21,7 +21,7 @@ export default function DatePicker() {
   };
 
   const selectClass =
-    "w-full appearance-none rounded-xl border-2 border-ink bg-paper px-4 py-3 text-lg font-semibold outline-none";
+    "w-full appearance-none rounded-xl border border-line bg-paper px-4 py-3 text-lg font-semibold outline-none focus-visible:border-coral";
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -63,10 +63,7 @@ export default function DatePicker() {
           ))}
         </select>
       </label>
-      <button
-        type="submit"
-        className="rounded-xl border-2 border-ink bg-teal px-6 py-3 text-lg font-bold text-ink shadow-[4px_4px_0_0_var(--color-ink)] transition-transform hover:-translate-y-0.5 active:translate-y-0"
-      >
+      <button type="submit" className="btn-soft text-lg">
         Vis dato
       </button>
     </form>

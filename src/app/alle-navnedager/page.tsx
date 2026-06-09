@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { CalendarMark } from "@/components/illustrations";
-import { MONTHS_NB, monthName } from "@/lib/dates";
+import { DeskCalendar } from "@/components/illustrations";
+import { MONTHS_NB, monthNameCap } from "@/lib/dates";
 import { daysInMonthEntries, nameCount } from "@/lib/navnedager";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema, itemListSchema } from "@/lib/schema";
@@ -15,22 +16,12 @@ export const metadata: Metadata = buildMetadata({
   path: "/alle-navnedager",
 });
 
-const ACCENTS = [
-  "bg-coral/20",
-  "bg-mustard/20",
-  "bg-teal/20",
-  "bg-forest/20",
-];
-
 export default function AllNameDaysPage() {
   const months = MONTHS_NB.map((m, i) => {
     const month = i + 1;
     const days = daysInMonthEntries(month);
     const count = days.reduce((s, d) => s + d.names.length, 0);
-    const preview = days
-      .flatMap((d) => d.names)
-      .slice(0, 4)
-      .join(", ");
+    const preview = days.flatMap((d) => d.names).slice(0, 4).join(", ");
     return { month, name: m, count, preview };
   });
 
@@ -40,7 +31,7 @@ export default function AllNameDaysPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
@@ -51,48 +42,38 @@ export default function AllNameDaysPage() {
           breadcrumbSchema(crumbs),
           itemListSchema({
             name: "Måneder",
-            items: MONTHS_NB.map((m) => ({
-              name: m,
-              path: `/maned/${m}`,
-            })),
+            items: MONTHS_NB.map((m) => ({ name: m, path: `/maned/${m}` })),
           }),
         ]}
       />
       <Breadcrumbs items={crumbs} />
 
-      <div className="flex items-center gap-3 text-teal-deep">
-        <CalendarMark className="h-8 w-8" />
-        <span className="text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
-          Hele året
-        </span>
+      <div className="mt-6">
+        <PageHeader
+          eyebrow="Hele året"
+          title="Alle navnedager"
+          lead={`Den norske navnedagskalenderen med ${nameCount()} navn, fra 1. januar til 31. desember. Velg en måned.`}
+          icon={<DeskCalendar className="h-8 w-9" />}
+        />
       </div>
-      <h1 className="mt-3 font-display text-5xl font-semibold sm:text-7xl">
-        Alle navnedager
-      </h1>
-      <p className="mt-4 max-w-xl text-xl text-ink-soft">
-        Den norske navnedagskalenderen med {nameCount()} navn, fra 1. januar til
-        31. desember. Velg en måned.
-      </p>
 
       <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {months.map((m, i) => (
+        {months.map((m) => (
           <li key={m.name}>
             <Link
               href={`/maned/${m.name}`}
-              className={`flex h-full flex-col rounded-3xl border-2 border-ink p-6 transition-transform hover:-translate-y-1 ${
-                ACCENTS[i % ACCENTS.length]
-              }`}
+              className="flex h-full flex-col rounded-2xl border border-line bg-paper p-6 transition-transform hover:-translate-y-1 hover:border-coral"
             >
               <div className="flex items-baseline justify-between">
-                <h2 className="font-display text-3xl font-semibold capitalize">
-                  {monthName(m.month)}
+                <h2 className="font-display text-2xl font-extrabold">
+                  {monthNameCap(m.month)}
                 </h2>
-                <span className="font-display text-2xl font-semibold text-ink-soft">
+                <span className="font-display text-xl font-bold text-ink-soft">
                   {String(m.month).padStart(2, "0")}
                 </span>
               </div>
               <p className="mt-3 text-sm text-ink-soft">{m.preview} …</p>
-              <p className="mt-auto pt-4 text-sm font-bold uppercase tracking-widest text-ink-soft">
+              <p className="mt-auto pt-4 text-sm font-bold uppercase tracking-widest text-coral-deep">
                 {m.count} navn →
               </p>
             </Link>

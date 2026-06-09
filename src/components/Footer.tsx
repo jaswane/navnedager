@@ -47,6 +47,17 @@ export default function Footer() {
               Norges fineste navnedagskalender. Finn ut hvem som har navnedag i
               dag – søk på navn eller dato.
             </p>
+            <p className="mt-4 max-w-xs text-sm text-ink-soft">
+              Se også{" "}
+              <a
+                href="https://navnetoppen.no"
+                rel="noopener"
+                className="font-semibold text-ink underline decoration-mustard decoration-2 underline-offset-4 hover:text-coral-deep"
+              >
+                Navnetoppen.no
+              </a>{" "}
+              for navnestatistikk og de mest populære navnene i Norge.
+            </p>
           </div>
 
           {COLS.map((col) => (

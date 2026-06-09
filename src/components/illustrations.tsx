@@ -122,6 +122,91 @@ export function Sun({ className, title }: IconProps) {
   );
 }
 
+export function AtoZ({ className, title }: IconProps) {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" className={className} {...base(title)}>
+      {title && <title>{title}</title>}
+      <text
+        x="6"
+        y="30"
+        fontFamily="var(--font-sans)"
+        fontSize="26"
+        fontWeight="800"
+        fill="currentColor"
+      >
+        A
+      </text>
+      <text
+        x="32"
+        y="54"
+        fontFamily="var(--font-sans)"
+        fontSize="26"
+        fontWeight="800"
+        fill="currentColor"
+      >
+        Å
+      </text>
+      <path
+        d="M24 18l8 0M24 18l3-3M24 18l3 3"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M40 46l-8 0M40 46l-3-3M40 46l-3 3"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Håndtegnet bordkalender til introseksjoner/header. */
+export function DeskCalendar({ className, title }: IconProps) {
+  return (
+    <svg viewBox="0 0 96 80" fill="none" className={className} {...base(title)}>
+      {title && <title>{title}</title>}
+      {/* stativ */}
+      <path
+        d="M14 64h68l-6 8H20z"
+        fill="currentColor"
+        opacity="0.18"
+      />
+      {/* kalenderark */}
+      <rect
+        x="20"
+        y="18"
+        width="56"
+        height="46"
+        rx="5"
+        fill="var(--color-cream)"
+        stroke="currentColor"
+        strokeWidth="3"
+      />
+      <path d="M20 30h56" stroke="currentColor" strokeWidth="3" />
+      {/* ringer */}
+      <path
+        d="M32 12v10M48 12v10M64 12v10"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+      {/* dag-markering */}
+      <circle cx="48" cy="47" r="9" fill="currentColor" opacity="0.85" />
+      <path
+        d="M30 44h8M58 44h8M30 54h36"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        opacity="0.4"
+      />
+    </svg>
+  );
+}
+
 export function Leaf({ className, title }: IconProps) {
   return (
     <svg viewBox="0 0 64 64" fill="none" className={className} {...base(title)}>

@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import CurrentYearDate from "@/components/CurrentYearDate";
-import { CalendarMark } from "@/components/illustrations";
+import LinkCard from "@/components/LinkCard";
+import { DeskCalendar } from "@/components/illustrations";
 import { namesForDate, nameToSlug } from "@/lib/navnedager";
 import {
   allDates,
@@ -12,6 +13,7 @@ import {
   dateSlug,
   formatDayMonth,
   monthName,
+  monthNameCap,
   addDays,
 } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
@@ -25,14 +27,19 @@ export function generateStaticParams() {
 
 type Params = { params: Promise<{ slug: string }> };
 
+/** "Kolbein og Kolbjørn" / "A, B og C". */
+function joinNames(names: string[]): string {
+  if (names.length <= 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} og ${names[names.length - 1]}`;
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const parsed = parseDateSlug(slug);
   if (!parsed) return {};
   const date = formatDayMonth(parsed.month, parsed.day);
   const names = namesForDate(parsed.month, parsed.day);
-  const list =
-    names.length > 0 ? names.join(", ") : "ingen navn i navnedagskalenderen";
+  const list = names.length > 0 ? joinNames(names) : "ingen navn";
   return buildMetadata({
     title: `Navnedag ${date}`,
     description: `${date}: ${list} har navnedag. Se hvem som har navnedag den ${date} i den norske navnedagskalenderen.`,
@@ -51,7 +58,6 @@ export default async function DatePage({ params }: Params) {
   const { month, day } = parsed;
   const date = formatDayMonth(month, day);
   const names = namesForDate(month, day);
-
   const prev = addDays(REF_YEAR, month, day, -1);
   const next = addDays(REF_YEAR, month, day, 1);
 
@@ -62,7 +68,7 @@ export default async function DatePage({ params }: Params) {
   ];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
@@ -82,104 +88,67 @@ export default async function DatePage({ params }: Params) {
       />
       <Breadcrumbs items={crumbs} />
 
-      <div className="flex items-center gap-2 text-teal-deep">
-        <CalendarMark className="h-7 w-7" />
-        <span className="text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
+      {/* Tittel + kort svar, sentrert */}
+      <div className="mt-6 text-center">
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-ink-soft">
           Dato
-        </span>
+        </p>
+        <h1 className="mt-2 font-display text-6xl font-extrabold tracking-tight sm:text-7xl">
+          {date}
+        </h1>
+        <p className="mt-4 text-xl text-ink-soft">
+          {names.length > 0 ? (
+            <>
+              <span className="font-semibold text-ink">{joinNames(names)}</span>{" "}
+              har navnedag {date}.
+            </>
+          ) : (
+            <>Ingen navn har navnedag den {date}.</>
+          )}
+        </p>
       </div>
 
-      <h1 className="mt-4 font-display text-6xl font-semibold leading-none sm:text-8xl">
-        {date}
-      </h1>
-
-      {/* Kort svar først */}
-      <p className="mt-6 text-2xl text-ink-soft">
-        {names.length > 0 ? (
-          <>
-            <strong className="text-ink">{names.join(", ")}</strong> har navnedag{" "}
-            {date}.
-          </>
-        ) : (
-          <>Ingen navn har navnedag den {date}.</>
-        )}
+      {/* Datoboks */}
+      <p className="infobox mx-auto mt-7 max-w-md text-center font-semibold text-ink">
+        <CurrentYearDate month={month} day={day} variant="stamp" />
       </p>
 
-      <div className="mt-6 rounded-2xl border-2 border-line bg-paper p-5">
-        <CurrentYearDate month={month} day={day} />
-      </div>
-
-      {/* Navnene */}
+      {/* Navnebrikker */}
       {names.length > 0 && (
-        <section className="mt-12">
-          <h2 className="mb-4 font-display text-2xl font-semibold">
-            Navn med navnedag {date}
-          </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {names.map((n, i) => {
-              const s = nameToSlug(n);
-              const accent = ["bg-coral", "bg-mustard", "bg-teal", "bg-forest"][
-                i % 4
-              ];
-              return (
-                <li key={n}>
-                  <Link
-                    href={`/navn/${s}`}
-                    className="flex items-center gap-4 rounded-2xl border-2 border-ink bg-paper p-4 transition-transform hover:-translate-y-0.5"
-                  >
-                    <span
-                      className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${accent} font-display text-xl font-bold text-ink`}
-                    >
-                      {n.charAt(0)}
-                    </span>
-                    <span className="font-display text-xl font-semibold">{n}</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          {names.map((n) => (
+            <Link
+              key={n}
+              href={`/navn/${nameToSlug(n)}`}
+              className="rounded-full border border-line bg-paper px-6 py-2.5 font-display text-lg font-bold transition-colors hover:border-coral hover:text-coral-deep"
+            >
+              {n}
+            </Link>
+          ))}
+        </div>
       )}
 
-      {/* Relaterte datoer + måned */}
-      <section className="mt-12">
-        <h2 className="mb-4 font-display text-2xl font-semibold">Bla i kalenderen</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <Link
-            href={`/dato/${dateSlug(prev.month, prev.day)}`}
-            className="rounded-2xl border-2 border-ink bg-paper px-5 py-4 transition-transform hover:-translate-y-0.5"
-          >
-            <span className="block text-xs font-bold uppercase tracking-widest text-ink-soft">
-              Forrige dag
-            </span>
-            <span className="font-display text-lg font-semibold">
-              {formatDayMonth(prev.month, prev.day)}
-            </span>
-          </Link>
-          <Link
-            href={`/maned/${monthName(month)}`}
-            className="rounded-2xl border-2 border-ink bg-mustard/20 px-5 py-4 transition-transform hover:-translate-y-0.5"
-          >
-            <span className="block text-xs font-bold uppercase tracking-widest text-ink-soft">
-              Hele måneden
-            </span>
-            <span className="font-display text-lg font-semibold capitalize">
-              {monthName(month)}
-            </span>
-          </Link>
-          <Link
-            href={`/dato/${dateSlug(next.month, next.day)}`}
-            className="rounded-2xl border-2 border-ink bg-paper px-5 py-4 text-right transition-transform hover:-translate-y-0.5"
-          >
-            <span className="block text-xs font-bold uppercase tracking-widest text-ink-soft">
-              Neste dag
-            </span>
-            <span className="font-display text-lg font-semibold">
-              {formatDayMonth(next.month, next.day)}
-            </span>
-          </Link>
-        </div>
-      </section>
+      {/* Naviger i kalenderen */}
+      <div className="mx-auto mt-9 flex max-w-md flex-col gap-3">
+        <LinkCard
+          href={`/dato/${dateSlug(prev.month, prev.day)}`}
+          label="Forrige dag"
+          sublabel={formatDayMonth(prev.month, prev.day)}
+          icon={<span className="text-lg">‹</span>}
+        />
+        <LinkCard
+          href={`/dato/${dateSlug(next.month, next.day)}`}
+          label="Neste dag"
+          sublabel={formatDayMonth(next.month, next.day)}
+          icon={<span className="text-lg">›</span>}
+        />
+        <LinkCard
+          href={`/maned/${monthName(month)}`}
+          label={`Hele ${monthNameCap(month)}`}
+          sublabel="Alle navnedager i måneden"
+          icon={<DeskCalendar className="h-6 w-7" />}
+        />
+      </div>
     </div>
   );
 }

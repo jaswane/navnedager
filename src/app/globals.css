@@ -17,8 +17,12 @@
   --color-forest-deep: #5a7551;
   --color-line: #e3dccf;
 
-  /* Typografi */
-  --font-display: var(--font-fraunces), "Cormorant Garamond", Georgia, serif;
+  /* Dyp, tilgjengelig teal til hero-flaten (hvit tekst ≥ 4.5:1) */
+  --color-hero: #2a7e82;
+  --color-hero-deep: #246f73;
+
+  /* Typografi – én sans serif gjennom hele nettstedet */
+  --font-display: var(--font-source), system-ui, -apple-system, sans-serif;
   --font-sans: var(--font-source), system-ui, -apple-system, sans-serif;
 
   /* Avrunding */
@@ -58,9 +62,9 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    line-height: 1.02;
-    letter-spacing: -0.01em;
-    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    font-weight: 700;
   }
 
   ::selection {
@@ -98,6 +102,57 @@
     background-color: var(--color-paper);
     border: 1.5px solid var(--color-line);
     border-radius: var(--radius-card);
+  }
+
+  /* Rolig lenkeboks – brukes konsekvent på undersider */
+  .linkrow {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-paper);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .linkrow:hover {
+    border-color: var(--color-coral);
+    transform: translateY(-2px);
+  }
+
+  /* Myk primærknapp – uten tung svart slagskygge */
+  .btn-soft {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--color-mustard);
+    color: var(--color-ink);
+    font-weight: 700;
+    border-radius: 0.85rem;
+    padding: 0.7rem 1.4rem;
+    box-shadow: 0 6px 16px -8px rgba(43, 37, 35, 0.4);
+    transition: transform 0.15s ease;
+  }
+  .btn-soft:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Rolig informasjonsboks */
+  .infobox {
+    border: 1px solid var(--color-line);
+    background-color: var(--color-cream-deep);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  /* Prikkrutenett til hero-dekor */
+  .dot-grid {
+    background-image: radial-gradient(
+      currentColor 1.6px,
+      transparent 1.6px
+    );
+    background-size: 16px 16px;
   }
 
   /* Redaksjonell brødtekst */

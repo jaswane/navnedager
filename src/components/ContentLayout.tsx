@@ -31,10 +31,14 @@ export default function ContentLayout({
         ]}
       />
       <Breadcrumbs items={crumbs} />
-      <h1 className="font-display text-5xl font-semibold leading-[0.98] sm:text-6xl">
-        {title}
-      </h1>
-      {lead && <p className="mt-5 text-xl text-ink-soft">{lead}</p>}
+      <header className="mt-6 text-center">
+        <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+          {title}
+        </h1>
+        {lead && (
+          <p className="mx-auto mt-4 max-w-2xl text-xl text-ink-soft">{lead}</p>
+        )}
+      </header>
       <div className="prose-content mt-10 space-y-5 text-lg leading-relaxed">
         {children}
       </div>

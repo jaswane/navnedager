@@ -23,11 +23,32 @@ export default function SourcesPage() {
         { name: "Datakilder", path: "/datakilder" },
       ]}
     >
-      <h2>Navnedagskalenderen</h2>
+      <h2>Hvilken liste bruker vi?</h2>
       <p>
-        Navnene som vises er hentet fra den moderne norske navnedagslisten, slik
-        den brukes i norske almanakker og kalendere. Listen inneholder{" "}
-        {nameCount()} navn fordelt på årets dager.
+        Navnene følger den tradisjonelle norske navnedagslisten slik den er
+        gjengitt hos vanlige norske navnedagskilder. Listen vår er på linje med
+        blant annet nummeruke.no, navnedag.nu, Store norske leksikon og
+        Navneguiden, og inneholder {nameCount()} navn fordelt på årets dager – som
+        regel to navn per dag.
+      </p>
+
+      <h2>Ikke den offisielle Almanakkforlaget-listen</h2>
+      <p>
+        Den offisielle navnedagsrekkefølgen eies og utgis av Almanakkforlaget, i
+        samarbeid med navneforskere ved Universitetet i Oslo. Vi bruker{" "}
+        <strong>ikke</strong> denne offisielle listen direkte, og Navnedager.no er
+        verken tilknyttet eller godkjent av Almanakkforlaget. Vi gjengir den
+        alminnelige, mye brukte navnedagslisten.
+      </p>
+
+      <h2>Navnedagslister kan variere</h2>
+      <p>
+        Det finnes flere utgaver av den norske navnedagskalenderen, og ulike
+        almanakker og nettsteder kan ha forskjeller. Noen lister oppgir to navn
+        per dag, andre tre. Enkelte datoer har også ulike navn i ulike kilder – for
+        eksempel kan 12. januar oppgis både som «Reinhard, Reinert» og «Nataniel,
+        Nelly». Vi har valgt én konsekvent liste, men avvik fra din almanakk kan
+        derfor forekomme.
       </p>
 
       <h2>Slik er dataene lagret</h2>
@@ -38,19 +59,11 @@ export default function SourcesPage() {
         og uavhengig.
       </p>
 
-      <h2>Nøyaktighet</h2>
+      <h2>Fant du en feil?</h2>
       <p>
-        Vi etterstreber at dataene skal være korrekte og oppdaterte. Ulike
-        almanakker og kalenderutgivere kan i enkelte tilfeller ha små forskjeller
-        i navnedagslisten. Finner du en feil eller et navn som mangler, setter vi
-        pris på tilbakemelding.
-      </p>
-
-      <h2>Endringer over tid</h2>
-      <p>
-        Den norske navnedagskalenderen er revidert flere ganger for å gjøre den
-        mer i tråd med navn som faktisk er i bruk. Vi oppdaterer listen dersom det
-        kommer endringer.
+        Vi etterstreber at dataene skal være korrekte. Finner du en feil eller et
+        navn som mangler, setter vi pris på tilbakemelding, så oppdaterer vi
+        listen.
       </p>
     </ContentLayout>
   );

@@ -57,7 +57,7 @@ export default function NameSearch({ items, autoFocus }: Props) {
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-paper px-5 py-3.5 shadow-[4px_4px_0_0_var(--color-mustard)]">
+      <div className="flex items-center gap-3 rounded-2xl border border-line bg-paper px-5 py-3.5 shadow-sm transition-colors focus-within:border-coral">
         <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-ink-soft" aria-hidden="true">
           <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" fill="none" />
           <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -92,7 +92,7 @@ export default function NameSearch({ items, autoFocus }: Props) {
         <ul
           id="navnesok-resultater"
           role="listbox"
-          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border-2 border-ink bg-paper shadow-[4px_4px_0_0_var(--color-teal)]"
+          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-line bg-paper shadow-lg"
         >
           {matches.map((item, i) => (
             <li key={item.s} role="option" aria-selected={i === active}>

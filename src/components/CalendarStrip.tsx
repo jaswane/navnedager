@@ -5,87 +5,70 @@ import { namesForDate } from "@/lib/navnedager";
 type Props = {
   start: { year: number; month: number; day: number };
   count?: number;
-  /** Marker første kort som «i dag». */
-  highlightFirst?: boolean;
+  /** Dato som skal markeres som «i dag». */
+  highlight?: { month: number; day: number };
 };
 
-const ACCENTS = [
-  "text-coral",
-  "text-mustard-deep",
-  "text-teal-deep",
-  "text-forest",
-];
-
-/** En visuell kalenderstripe – ikke en tabell, men en rad med dagkort. */
-export default function CalendarStrip({
-  start,
-  count = 7,
-  highlightFirst = true,
-}: Props) {
+/** Visuell kalenderstripe – luftig rad med dagkort, ikke en tabell. */
+export default function CalendarStrip({ start, count = 7, highlight }: Props) {
   const days = Array.from({ length: count }, (_, i) => {
     const d = addDays(start.year, start.month, start.day, i);
     return {
       ...d,
       names: namesForDate(d.month, d.day),
       weekday: weekdayName(d.year, d.month, d.day),
+      isToday:
+        !!highlight && d.month === highlight.month && d.day === highlight.day,
     };
   });
 
   return (
-    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
-      {days.map((d, i) => {
-        const isToday = highlightFirst && i === 0;
-        return (
-          <li key={`${d.month}-${d.day}`}>
-            <Link
-              href={`/dato/${dateSlug(d.month, d.day)}`}
-              className={`group flex h-full flex-col rounded-2xl border-2 p-3.5 transition-transform hover:-translate-y-1 ${
-                isToday
-                  ? "border-ink bg-ink text-cream shadow-[4px_4px_0_0_var(--color-mustard)]"
-                  : "border-line bg-paper"
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+      {days.map((d) => (
+        <li key={`${d.month}-${d.day}`}>
+          <Link
+            href={`/dato/${dateSlug(d.month, d.day)}`}
+            aria-current={d.isToday ? "date" : undefined}
+            className={`group flex h-full flex-col items-center rounded-2xl px-2 py-4 text-center transition-transform hover:-translate-y-1 ${
+              d.isToday
+                ? "bg-paper ring-2 ring-hero"
+                : "hover:bg-paper"
+            }`}
+          >
+            <span
+              className={`font-display text-4xl font-bold leading-none ${
+                d.isToday ? "text-hero-deep" : "text-coral-deep"
               }`}
             >
-              <span
-                className={`text-[0.7rem] font-bold uppercase tracking-widest ${
-                  isToday ? "text-mustard" : "text-ink-soft"
-                }`}
-              >
-                {isToday ? "I dag" : d.weekday.slice(0, 3)}
-              </span>
-              <span className="mt-1 font-display text-3xl font-semibold leading-none">
-                {d.day}.
-              </span>
-              <span
-                className={`text-xs ${isToday ? "text-cream/70" : "text-ink-soft"}`}
-              >
-                {monthName(d.month)}
-              </span>
-              <span className="mt-3 flex flex-col gap-0.5">
-                {d.names.length > 0 ? (
-                  d.names.slice(0, 3).map((n, j) => (
-                    <span
-                      key={n}
-                      className={`font-display text-base font-semibold leading-tight ${
-                        isToday ? "text-cream" : ACCENTS[j % ACCENTS.length]
-                      }`}
-                    >
-                      {n}
-                    </span>
-                  ))
-                ) : (
+              {d.day}
+            </span>
+            <span className="mt-1 text-[0.7rem] font-bold uppercase tracking-widest text-ink-soft">
+              {monthName(d.month)}
+            </span>
+            <span className="mt-2.5 flex flex-col gap-0.5">
+              {d.names.length > 0 ? (
+                d.names.map((n) => (
                   <span
-                    className={`text-sm italic ${
-                      isToday ? "text-cream/60" : "text-ink-soft"
+                    key={n}
+                    className={`text-sm font-semibold leading-tight ${
+                      d.isToday ? "text-hero-deep" : "text-ink"
                     }`}
                   >
-                    Ingen navnedag
+                    {n}
                   </span>
-                )}
+                ))
+              ) : (
+                <span className="text-xs italic text-ink-soft">—</span>
+              )}
+            </span>
+            {d.isToday && (
+              <span className="mt-2 rounded-full bg-hero px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-widest text-cream">
+                I dag
               </span>
-            </Link>
-          </li>
-        );
-      })}
+            )}
+          </Link>
+        </li>
+      ))}
     </ul>
   );
 }

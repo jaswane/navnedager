@@ -3,9 +3,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
-import { Flower } from "@/components/illustrations";
+import PageHeader from "@/components/PageHeader";
+import { DeskCalendar } from "@/components/illustrations";
 import { daysInMonthEntries, nameToSlug } from "@/lib/navnedager";
-import { MONTHS_NB, monthFromSlug, monthName, dateSlug } from "@/lib/dates";
+import { MONTHS_NB, monthFromSlug, monthName, monthNameCap, dateSlug } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema, itemListSchema } from "@/lib/schema";
 
@@ -23,7 +24,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (month === null) return {};
   const name = monthName(month);
   return buildMetadata({
-    title: `Navnedager i ${name}`,
+    title: `Navnedager i ${monthNameCap(month)}`,
     description: `Alle navnedager i ${name} – se hvilke navn som har navnedag hver dag gjennom hele ${name} i den norske navnedagskalenderen.`,
     path: `/maned/${name}`,
   });
@@ -38,13 +39,12 @@ export default async function MonthPage({ params }: Params) {
   const days = daysInMonthEntries(month);
   const prevMonth = month === 1 ? 12 : month - 1;
   const nextMonth = month === 12 ? 1 : month + 1;
-
   const totalNames = days.reduce((sum, d) => sum + d.names.length, 0);
 
   const crumbs = [
     { name: "Forside", path: "/" },
     { name: "Alle navnedager", path: "/alle-navnedager" },
-    { name: name.charAt(0).toUpperCase() + name.slice(1), path: `/maned/${name}` },
+    { name: monthNameCap(month), path: `/maned/${name}` },
   ];
 
   const listItems = days.flatMap((d) =>
@@ -52,11 +52,11 @@ export default async function MonthPage({ params }: Params) {
   );
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
-            name: `Navnedager i ${name}`,
+            name: `Navnedager i ${monthNameCap(month)}`,
             description: `Alle navnedager i ${name}.`,
             path: `/maned/${name}`,
           }),
@@ -66,47 +66,40 @@ export default async function MonthPage({ params }: Params) {
       />
       <Breadcrumbs items={crumbs} />
 
-      <div className="relative overflow-hidden rounded-3xl border-2 border-ink bg-forest/15 p-8">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-forest-deep">
-          Måned
-        </p>
-        <h1 className="mt-2 font-display text-6xl font-semibold capitalize leading-none sm:text-7xl">
-          {name}
-        </h1>
-        <p className="mt-4 max-w-md text-lg text-ink-soft">
-          {totalNames} navn har navnedag i løpet av {name}.
-        </p>
-        <Flower className="pointer-events-none absolute -bottom-8 -right-6 h-40 w-40 text-forest/25" />
+      <div className="mt-6">
+        <PageHeader
+          eyebrow="Måned"
+          title={monthNameCap(month)}
+          lead={`${totalNames} navn har navnedag i løpet av ${name}.`}
+          icon={<DeskCalendar className="h-8 w-9" />}
+        />
       </div>
 
       {/* Måned-navigasjon */}
-      <div className="mt-6 flex items-center justify-between gap-3">
+      <div className="mt-8 flex items-center justify-between gap-3">
         <Link
           href={`/maned/${monthName(prevMonth)}`}
-          className="rounded-xl border-2 border-ink bg-paper px-4 py-2 font-semibold capitalize transition-transform hover:-translate-y-0.5"
+          className="rounded-xl border border-line bg-paper px-4 py-2 font-semibold transition-transform hover:-translate-x-0.5"
         >
-          ← {monthName(prevMonth)}
+          ← {monthNameCap(prevMonth)}
         </Link>
         <Link
           href={`/maned/${monthName(nextMonth)}`}
-          className="rounded-xl border-2 border-ink bg-paper px-4 py-2 font-semibold capitalize transition-transform hover:-translate-y-0.5"
+          className="rounded-xl border border-line bg-paper px-4 py-2 font-semibold transition-transform hover:translate-x-0.5"
         >
-          {monthName(nextMonth)} →
+          {monthNameCap(nextMonth)} →
         </Link>
       </div>
 
       {/* Dag for dag */}
-      <ul className="mt-8 divide-y divide-line overflow-hidden rounded-2xl border-2 border-ink bg-paper">
+      <ul className="paper mt-6 divide-y divide-line overflow-hidden">
         {days.map((d) => (
-          <li
-            key={d.day}
-            className="flex items-baseline gap-4 px-5 py-3.5 sm:gap-6"
-          >
+          <li key={d.day} className="flex items-baseline gap-5 px-5 py-3.5">
             <Link
               href={`/dato/${dateSlug(month, d.day)}`}
-              className="w-12 shrink-0 font-display text-2xl font-semibold tabular-nums hover:text-coral-deep"
+              className="w-10 shrink-0 text-right font-display text-xl font-bold tabular-nums text-coral-deep hover:underline"
             >
-              {d.day}.
+              {d.day}
             </Link>
             <span className="flex flex-wrap gap-x-2 gap-y-1">
               {d.names.length > 0 ? (
@@ -114,7 +107,7 @@ export default async function MonthPage({ params }: Params) {
                   <span key={n}>
                     <Link
                       href={`/navn/${nameToSlug(n)}`}
-                      className="font-display text-lg font-semibold underline decoration-line decoration-2 underline-offset-4 hover:decoration-coral"
+                      className="font-semibold underline decoration-line decoration-2 underline-offset-4 hover:decoration-coral"
                     >
                       {n}
                     </Link>
@@ -132,21 +125,23 @@ export default async function MonthPage({ params }: Params) {
       </ul>
 
       {/* Alle måneder */}
-      <nav aria-label="Alle måneder" className="mt-12">
-        <h2 className="mb-4 font-display text-2xl font-semibold">Andre måneder</h2>
-        <ul className="flex flex-wrap gap-2.5">
+      <nav aria-label="Alle måneder" className="mt-10">
+        <h2 className="mb-4 text-center text-sm font-bold uppercase tracking-[0.2em] text-ink-soft">
+          Andre måneder
+        </h2>
+        <ul className="flex flex-wrap justify-center gap-2.5">
           {MONTHS_NB.map((m, i) => (
             <li key={m}>
               <Link
                 href={`/maned/${m}`}
                 aria-current={i + 1 === month ? "page" : undefined}
-                className={`inline-block rounded-full border-2 border-ink px-4 py-1.5 font-semibold capitalize transition-colors ${
+                className={`inline-block rounded-full px-4 py-1.5 font-semibold transition-colors ${
                   i + 1 === month
                     ? "bg-ink text-cream"
-                    : "bg-cream-deep hover:bg-teal"
+                    : "border border-line bg-paper hover:border-coral"
                 }`}
               >
-                {m}
+                {monthNameCap(i + 1)}
               </Link>
             </li>
           ))}

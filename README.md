@@ -46,8 +46,11 @@ src/
 
 ## Datakilde
 
-Navnene følger den moderne norske navnedagskalenderen slik den brukes i norske
-almanakker. Ulike utgivere kan ha små forskjeller; se `/datakilder`.
+Navnene følger den tradisjonelle, mye brukte norske navnedagslisten (på linje
+med nummeruke.no, navnedag.nu, SNL og Navneguiden). Datasettet genereres
+deterministisk med `scripts/build-data.mjs`. Dette er **ikke** den offisielle
+Almanakkforlaget-lista, og siden er ikke tilknyttet Almanakkforlaget. Ulike
+lister kan variere; se `/datakilder`.
 
 ---
 

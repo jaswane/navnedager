@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NameSearch from "@/components/NameSearch";
+import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
+import { AtoZ } from "@/components/illustrations";
 import { allNames, searchIndex, nameCount } from "@/lib/navnedager";
 import { formatDayMonth } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
@@ -19,7 +21,6 @@ export default function NamesIndexPage() {
   const names = allNames();
   const items = searchIndex();
 
-  // Grupper alfabetisk (norsk rekkefølge er allerede ivaretatt av sorteringen).
   const groups = new Map<string, typeof names>();
   for (const entry of names) {
     const letter = entry.name.charAt(0).toUpperCase();
@@ -34,7 +35,7 @@ export default function NamesIndexPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <JsonLd
         data={[
           webPageSchema({
@@ -47,23 +48,29 @@ export default function NamesIndexPage() {
       />
       <Breadcrumbs items={crumbs} />
 
-      <h1 className="font-display text-5xl font-semibold sm:text-7xl">Navn A–Å</h1>
-      <p className="mt-4 max-w-xl text-xl text-ink-soft">
-        {nameCount()} navn i den norske navnedagskalenderen. Søk eller bla deg
-        nedover.
-      </p>
+      <div className="mt-6">
+        <PageHeader
+          eyebrow="Navneregister"
+          title="Navn A–Å"
+          lead={`${nameCount()} navn i den norske navnedagskalenderen. Søk eller bla deg nedover.`}
+          icon={<AtoZ className="h-8 w-8" />}
+        />
+      </div>
 
-      <div className="mt-7 max-w-xl">
+      <div className="mx-auto mt-7 max-w-xl">
         <NameSearch items={items} />
       </div>
 
       {/* Bokstav-navigasjon */}
-      <nav aria-label="Hopp til bokstav" className="mt-8 flex flex-wrap gap-2">
+      <nav
+        aria-label="Hopp til bokstav"
+        className="mt-8 flex flex-wrap justify-center gap-2"
+      >
         {letters.map((l) => (
           <a
             key={l}
             href={`#bokstav-${l}`}
-            className="grid h-9 w-9 place-items-center rounded-full border-2 border-ink bg-paper font-display font-bold transition-colors hover:bg-mustard"
+            className="grid h-9 w-9 place-items-center rounded-full border border-line bg-paper font-bold transition-colors hover:border-coral hover:text-coral-deep"
           >
             {l}
           </a>
@@ -71,24 +78,23 @@ export default function NamesIndexPage() {
       </nav>
 
       {/* Grupper */}
-      <div className="mt-12 space-y-12">
+      <div className="mt-12 space-y-10">
         {letters.map((letter) => (
           <section key={letter} id={`bokstav-${letter}`} className="scroll-mt-24">
-            <h2 className="mb-4 flex items-center gap-3 font-display text-4xl font-semibold">
-              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-coral text-ink">
+            <h2 className="mb-3 flex items-center gap-3">
+              <span className="font-display text-3xl font-extrabold text-coral-deep">
                 {letter}
               </span>
+              <span className="h-px flex-1 bg-line" />
             </h2>
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-3 lg:grid-cols-4">
+            <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5 sm:grid-cols-3 lg:grid-cols-4">
               {groups.get(letter)!.map((entry) => (
                 <li key={entry.slug}>
                   <Link
                     href={`/navn/${entry.slug}`}
-                    className="flex items-baseline justify-between gap-2 border-b border-line py-1.5 hover:border-coral"
+                    className="flex items-baseline justify-between gap-2 border-b border-line py-1.5 transition-colors hover:border-coral"
                   >
-                    <span className="font-display text-lg font-semibold">
-                      {entry.name}
-                    </span>
+                    <span className="font-semibold">{entry.name}</span>
                     <span className="text-xs text-ink-soft">
                       {formatDayMonth(entry.month, entry.day)}
                     </span>

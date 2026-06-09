@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Source_Sans_3 } from "next/font/google";
+import { Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,18 +8,11 @@ import Analytics from "@/components/Analytics";
 import { SITE } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/schema";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-  weight: ["400", "500", "600", "700", "900"],
-});
-
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   variable: "--font-source",
   display: "swap",
-  weight: ["400", "600", "700"],
+  weight: ["400", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -46,7 +39,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="nb" className={`${fraunces.variable} ${sourceSans.variable}`}>
+    <html lang="nb" className={sourceSans.variable}>
       <body className="min-h-screen flex flex-col">
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <a
