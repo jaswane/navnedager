@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { CalendarMark } from "@/components/illustrations";
+import { DeskCalendar } from "@/components/illustrations";
 
 const LEFT = [
   { href: "/", label: "I dag" },
@@ -27,7 +27,7 @@ const ALL = [
 function Logo({ onClick }: { onClick?: () => void }) {
   return (
     <Link href="/" onClick={onClick} className="flex items-center gap-2.5" aria-label="Navnedager.no – forside">
-      <CalendarMark className="h-8 w-8 text-coral" />
+      <DeskCalendar className="h-8 w-8 text-coral" />
       <span className="rounded-lg bg-mustard px-3 py-1 font-display text-lg font-bold uppercase tracking-wide text-ink">
         Navnedager<span className="text-ink/70">.no</span>
       </span>

@@ -4,7 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import NameSearch from "@/components/NameSearch";
 import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { AtoZ } from "@/components/illustrations";
+import { TagName } from "@/components/illustrations";
 import { allNames, searchIndex, nameCount } from "@/lib/navnedager";
 import { formatDayMonth } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
@@ -53,7 +53,7 @@ export default function NamesIndexPage() {
           eyebrow="Navneregister"
           title="Navn A–Å"
           lead={`${nameCount()} navn i den norske navnedagskalenderen. Søk eller bla deg nedover.`}
-          icon={<AtoZ className="h-8 w-8" />}
+          icon={<TagName className="h-8 w-8" />}
         />
       </div>
 

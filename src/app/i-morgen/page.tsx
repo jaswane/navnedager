@@ -12,6 +12,7 @@ import {
   weekdayName,
   dateSlug,
 } from "@/lib/dates";
+import { Tomorrow } from "@/components/illustrations";
 import { namesForDate } from "@/lib/navnedager";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
@@ -53,6 +54,11 @@ export default function TomorrowPage() {
 
       {/* Kort svar først, sentrert */}
       <div className="mt-6 text-center">
+        <div className="mb-4 flex justify-center">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-mustard/20 text-mustard-deep">
+            <Tomorrow className="h-7 w-7" />
+          </span>
+        </div>
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-ink-soft">
           I morgen · {cap(weekday)} {tomorrow.day}. {monthName(tomorrow.month)} · Uke{" "}
           {week}

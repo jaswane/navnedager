@@ -4,7 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import DatePicker from "@/components/DatePicker";
 import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { CalendarMark } from "@/components/illustrations";
+import { DatePage } from "@/components/illustrations";
 import { MONTHS_NB, monthNameCap } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
@@ -41,7 +41,7 @@ export default function DateSearchPage() {
           eyebrow="Dato"
           title="Søk etter dato"
           lead="Velg en dag og måned for å se hvem som har navnedag."
-          icon={<CalendarMark className="h-8 w-8" />}
+          icon={<DatePage className="h-8 w-8" />}
         />
       </div>
 

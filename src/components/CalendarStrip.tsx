@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { addDays, dateSlug, monthName, weekdayName } from "@/lib/dates";
 import { namesForDate } from "@/lib/navnedager";
+import { Today } from "@/components/illustrations";
 
 type Props = {
   start: { year: number; month: number; day: number };
@@ -62,7 +63,8 @@ export default function CalendarStrip({ start, count = 7, highlight }: Props) {
               )}
             </span>
             {d.isToday && (
-              <span className="mt-2 rounded-full bg-hero px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-widest text-cream">
+              <span className="mt-2 flex items-center gap-1 rounded-full bg-hero px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-widest text-cream">
+                <Today className="h-3 w-3" />
                 I dag
               </span>
             )}

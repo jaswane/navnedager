@@ -9,6 +9,7 @@ type Props = {
   schemaName: string;
   schemaDescription: string;
   path: string;
+  icon?: React.ReactNode;
   children: React.ReactNode;
 };
 
@@ -20,6 +21,7 @@ export default function ContentLayout({
   schemaName,
   schemaDescription,
   path,
+  icon,
   children,
 }: Props) {
   return (
@@ -31,7 +33,12 @@ export default function ContentLayout({
         ]}
       />
       <Breadcrumbs items={crumbs} />
-      <header className="mt-6 text-center">
+      <header className="mt-6 flex flex-col items-center text-center">
+        {icon && (
+          <div className="mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-mustard/20 text-mustard-deep">
+            {icon}
+          </div>
+        )}
         <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
           {title}
         </h1>

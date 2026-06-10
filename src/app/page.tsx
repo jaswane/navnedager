@@ -3,7 +3,14 @@ import type { Metadata } from "next";
 import CalendarStrip from "@/components/CalendarStrip";
 import FAQ, { type FaqItem } from "@/components/FAQ";
 import JsonLd from "@/components/JsonLd";
-import { CalendarMark, AtoZ, Star, DeskCalendar } from "@/components/illustrations";
+import {
+  CalendarScene,
+  TagName,
+  DatePage,
+  Almanakk,
+  Today,
+  Tomorrow,
+} from "@/components/illustrations";
 import {
   osloToday,
   addDays,
@@ -52,9 +59,9 @@ const FAQS: FaqItem[] = [
 ];
 
 const CTAS = [
-  { href: "/navn", label: "Navn A–Å", Icon: AtoZ },
-  { href: "/dato", label: "Søk etter dato", Icon: CalendarMark },
-  { href: "/alle-navnedager", label: "Alle navnedager", Icon: Star },
+  { href: "/navn", label: "Navn A–Å", Icon: TagName },
+  { href: "/dato", label: "Søk etter dato", Icon: DatePage },
+  { href: "/alle-navnedager", label: "Alle navnedager", Icon: Almanakk },
 ];
 
 export default function HomePage() {
@@ -128,7 +135,8 @@ export default function HomePage() {
 
             {/* Navn */}
             <div className="flex-1 text-center md:text-left">
-              <p className="text-sm font-bold uppercase tracking-[0.25em] text-cream/80">
+              <p className="flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-[0.25em] text-cream/80 md:justify-start">
+                <Today className="h-4 w-4" />
                 {today.day}. {monthName(today.month)}
               </p>
               <h1 className="mt-2 font-display font-black uppercase leading-[0.9] tracking-tight">
@@ -156,7 +164,8 @@ export default function HomePage() {
               </p>
 
               <div className="mt-6 inline-block rounded-xl border border-cream/40 px-5 py-3 text-left">
-                <span className="block text-[0.65rem] font-bold uppercase tracking-[0.2em] text-cream/70">
+                <span className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-cream/70">
+                  <Tomorrow className="h-3.5 w-3.5" />
                   I morgen
                 </span>
                 <Link
@@ -233,7 +242,7 @@ export default function HomePage() {
         {/* HVA ER NAVNEDAG */}
         <section className="grid items-center gap-8 border-t border-line py-14 sm:grid-cols-[auto_1fr] sm:gap-12">
           <div className="mx-auto grid h-32 w-32 place-items-center rounded-3xl bg-mustard/20 sm:h-40 sm:w-40">
-            <DeskCalendar className="h-20 w-24 text-mustard-deep sm:h-24 sm:w-28" />
+            <CalendarScene className="h-20 w-24 text-mustard-deep sm:h-24 sm:w-28" />
           </div>
           <div>
             <h2 className="font-display text-3xl font-semibold sm:text-4xl">

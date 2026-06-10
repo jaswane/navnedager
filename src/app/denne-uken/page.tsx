@@ -4,7 +4,7 @@ import CalendarStrip from "@/components/CalendarStrip";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { CalendarMark } from "@/components/illustrations";
+import { DeskCalendar } from "@/components/illustrations";
 import {
   osloToday,
   addDays,
@@ -75,7 +75,7 @@ export default function ThisWeekPage() {
           eyebrow={`Uke ${week}`}
           title="Navnedager denne uken"
           lead={`Fra mandag ${formatDayMonth(monday.month, monday.day)} til søndag ${formatDayMonth(sunday.month, sunday.day)}.`}
-          icon={<CalendarMark className="h-8 w-8" />}
+          icon={<DeskCalendar className="h-8 w-8" />}
         />
       </div>
 

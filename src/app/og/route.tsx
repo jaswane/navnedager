@@ -47,16 +47,36 @@ export function GET() {
           }}
         />
 
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          {/* håndtegnet bordkalender (bygget av divs for OG) */}
           <div
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 14,
-              border: "5px solid #2B2523",
               display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              transform: "rotate(-3deg)",
             }}
-          />
+          >
+            <div style={{ display: "flex", gap: 7, marginBottom: -5 }}>
+              <div style={{ width: 6, height: 12, borderRadius: 3, border: "3px solid #2B2523" }} />
+              <div style={{ width: 6, height: 12, borderRadius: 3, border: "3px solid #2B2523" }} />
+              <div style={{ width: 6, height: 12, borderRadius: 3, border: "3px solid #2B2523" }} />
+            </div>
+            <div
+              style={{
+                width: 60,
+                height: 54,
+                borderRadius: 12,
+                border: "4px solid #2B2523",
+                background: "#FFFDF9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div style={{ width: 24, height: 20, borderRadius: 5, background: "#D9A441" }} />
+            </div>
+          </div>
           <span style={{ fontSize: 34, color: "#2B2523", fontWeight: 700 }}>
             Navnedager.no
           </span>

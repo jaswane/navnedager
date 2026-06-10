@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { CalendarMark, Star } from "@/components/illustrations";
+import { DeskCalendar, Star } from "@/components/illustrations";
 
 export default function NotFound() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col items-center px-4 py-24 text-center sm:px-6">
       <div className="relative">
-        <CalendarMark className="h-24 w-24 text-coral" />
+        <DeskCalendar className="h-24 w-24 text-coral" />
         <Star className="absolute -right-6 -top-4 h-10 w-10 text-mustard" />
       </div>
       <p className="mt-8 font-display text-7xl font-extrabold">404</p>

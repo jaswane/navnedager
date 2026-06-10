@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import ContentLayout from "@/components/ContentLayout";
 import JsonLd from "@/components/JsonLd";
 import FAQ, { type FaqItem } from "@/components/FAQ";
+import { CalendarScene } from "@/components/illustrations";
 import { buildMetadata } from "@/lib/seo";
 import { faqSchema } from "@/lib/schema";
 
@@ -39,6 +40,7 @@ export default function AboutNameDaysPage() {
       path="/om-navnedager"
       schemaName="Hva er navnedager?"
       schemaDescription="Forklaring av hva navnedager er og hvor tradisjonen kommer fra."
+      icon={<CalendarScene className="h-10 w-11" />}
       crumbs={[
         { name: "Forside", path: "/" },
         { name: "Hva er navnedager?", path: "/om-navnedager" },

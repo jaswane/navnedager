@@ -4,7 +4,7 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
 import CurrentYearDate from "@/components/CurrentYearDate";
 import LinkCard from "@/components/LinkCard";
-import { CalendarMark, DeskCalendar, Star } from "@/components/illustrations";
+import { DatePage, DeskCalendar, Star } from "@/components/illustrations";
 import Link from "next/link";
 import { allNames, nameBySlug, relatedNames } from "@/lib/navnedager";
 import { formatDayMonth, monthName, monthNameCap, dateSlug } from "@/lib/dates";
@@ -108,7 +108,7 @@ export default async function NamePage({ params }: Params) {
         <LinkCard
           href={`/dato/${dateSlug(entry.month, entry.day)}`}
           label={`Se alle navnedager ${date}`}
-          icon={<CalendarMark className="h-5 w-5" />}
+          icon={<DatePage className="h-5 w-5" />}
         />
         <LinkCard
           href={`/maned/${month}`}

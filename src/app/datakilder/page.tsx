@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ContentLayout from "@/components/ContentLayout";
 import { buildMetadata } from "@/lib/seo";
 import { nameCount } from "@/lib/navnedager";
+import { CalendarScene } from "@/components/illustrations";
 
 export const metadata: Metadata = buildMetadata({
   title: "Datakilder",
@@ -18,6 +19,7 @@ export default function SourcesPage() {
       path="/datakilder"
       schemaName="Datakilder"
       schemaDescription="Datagrunnlaget bak navnedagene på Navnedager.no."
+      icon={<CalendarScene className="h-10 w-11" />}
       crumbs={[
         { name: "Forside", path: "/" },
         { name: "Datakilder", path: "/datakilder" },

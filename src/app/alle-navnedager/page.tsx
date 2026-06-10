@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
-import { DeskCalendar } from "@/components/illustrations";
+import { Almanakk } from "@/components/illustrations";
 import { MONTHS_NB, monthNameCap } from "@/lib/dates";
 import { daysInMonthEntries, nameCount } from "@/lib/navnedager";
 import { buildMetadata } from "@/lib/seo";
@@ -53,7 +53,7 @@ export default function AllNameDaysPage() {
           eyebrow="Hele året"
           title="Alle navnedager"
           lead={`Den norske navnedagskalenderen med ${nameCount()} navn, fra 1. januar til 31. desember. Velg en måned.`}
-          icon={<DeskCalendar className="h-8 w-9" />}
+          icon={<Almanakk className="h-8 w-8" />}
         />
       </div>
 
