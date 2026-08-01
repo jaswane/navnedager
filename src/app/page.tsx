@@ -9,9 +9,8 @@ import {
   DatePage,
   Almanakk,
   Today,
-  Tomorrow,
 } from "@/components/illustrations";
-import { addDays, monthName, monthNameCap, cap, dateSlug } from "@/lib/dates";
+import { monthName, monthNameCap, cap } from "@/lib/dates";
 import { getServerNameDayContext } from "@/lib/nameday-context.server";
 import { daysFrom } from "@/lib/nameday-context";
 import { nameToSlug } from "@/lib/navnedager";
@@ -64,13 +63,12 @@ export default function HomePage() {
   const today = { year: ctx.year, month: ctx.today.month, day: ctx.today.day };
   const tomorrow = { month: ctx.tomorrow.month, day: ctx.tomorrow.day };
   const todayNames = ctx.today.names;
-  const tomorrowNames = ctx.tomorrow.names;
   const week = ctx.todayWeek;
   const weekday = ctx.todayWeekday;
   const spotlight = nameDaySpotlights[ctx.spotlight];
 
-  // Kalenderstripe sentrert rundt i dag (3 før, i dag, 3 etter)
-  const stripStart = addDays(today.year, today.month, today.day, -3);
+  // Kalenderstripe: de neste 7 dagene – i dag til og med dag +6.
+  const stripStart = today;
 
   // Strukturert data bygges fra NØYAKTIG de dagene stripen viser, og ett
   // listeelement per synlig navn. Ingen navn eller datoer kun i schema.
@@ -93,18 +91,18 @@ export default function HomePage() {
             path: "/",
           }),
           faqSchema(FAQS),
-          itemListSchema({ name: "Navnedager denne uken", items: stripItems }),
+          itemListSchema({ name: "De neste 7 dagene", items: stripItems }),
         ]}
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Stabil H1 – endrer seg ikke med dagens navn (SEO + tilgjengelighet). */}
-        <h1 className="mt-6 text-center font-display text-2xl font-semibold text-ink sm:text-3xl">
+        <h1 className="mt-4 text-center font-display text-2xl font-semibold text-ink sm:text-3xl">
           Hvem har navnedag i dag?
         </h1>
 
         {/* HERO – plakat */}
-        <section className="relative mt-4 overflow-hidden rounded-[2rem] bg-hero text-cream shadow-[0_20px_50px_-25px_rgba(36,111,115,0.7)]">
+        <section className="relative mt-3 overflow-hidden rounded-[2rem] bg-hero text-cream shadow-[0_20px_50px_-25px_rgba(36,111,115,0.7)]">
           {/* dekor */}
           <span className="absolute right-6 top-5 z-10 text-xs font-bold uppercase tracking-[0.2em] text-cream/80">
             Uke {week}
@@ -118,7 +116,7 @@ export default function HomePage() {
             className="absolute right-0 top-0 h-0 w-0 border-l-[46px] border-t-[46px] border-l-transparent border-t-cream/25"
           />
 
-          <div className="relative flex flex-col items-center gap-7 p-6 sm:p-10 md:flex-row md:items-center md:gap-10">
+          <div className="relative flex flex-col items-center gap-5 p-5 sm:gap-6 sm:p-7 md:flex-row md:items-center md:gap-8">
             {/* Datoblokk */}
             <div className="w-fit shrink-0 rounded-2xl bg-cream px-5 py-4 text-center text-hero-deep">
               <div className="text-sm font-bold tracking-[0.2em]">{today.year}</div>
@@ -170,19 +168,6 @@ export default function HomePage() {
                 {cap(weekday)} {today.day}. {monthName(today.month)} {today.year} · Uke{" "}
                 {week}
               </p>
-
-              <div className="mt-6 inline-block rounded-xl border border-cream/40 px-5 py-3 text-left">
-                <span className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-cream/70">
-                  <Tomorrow className="h-3.5 w-3.5" />
-                  I morgen
-                </span>
-                <Link
-                  href={`/dato/${dateSlug(tomorrow.month, tomorrow.day)}`}
-                  className="font-display text-lg font-semibold text-cream underline decoration-cream/40 decoration-2 underline-offset-4"
-                >
-                  {tomorrowNames.join(" & ") || "Ingen navnedag"}
-                </Link>
-              </div>
             </div>
           </div>
 
@@ -202,39 +187,26 @@ export default function HomePage() {
         </section>
 
         {/* NESTE DAGER */}
-        <section className="py-14">
+        <section className="pb-12 pt-7">
           <div className="flex items-center justify-center gap-4">
             <span className="hidden h-px flex-1 bg-line sm:block" />
             <h2 className="text-center font-display text-2xl font-semibold uppercase tracking-[0.15em] sm:text-3xl">
-              Navnedager denne uken
+              De neste 7 dagene
             </h2>
             <span className="hidden h-px flex-1 bg-line sm:block" />
           </div>
 
-          <div className="mt-8 flex items-center gap-2">
-            <Link
-              href={`/dato/${dateSlug(
-                addDays(stripStart.year, stripStart.month, stripStart.day, -1).month,
-                addDays(stripStart.year, stripStart.month, stripStart.day, -1).day
-              )}`}
-              aria-label="Forrige dag"
-              className="hidden h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-paper text-xl transition-transform hover:-translate-x-0.5 lg:grid"
-            >
-              ‹
-            </Link>
-            <div className="flex-1">
-              <CalendarStrip start={stripStart} count={7} highlight={today} />
-            </div>
-            <Link
-              href={`/dato/${dateSlug(
-                addDays(stripStart.year, stripStart.month, stripStart.day, 7).month,
-                addDays(stripStart.year, stripStart.month, stripStart.day, 7).day
-              )}`}
-              aria-label="Neste dag"
-              className="hidden h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-paper text-xl transition-transform hover:translate-x-0.5 lg:grid"
-            >
-              ›
-            </Link>
+          {/* Fast oversikt i dag → +6. Ingen datonavigasjon her: morgendagen
+              er allerede kort nr. 2, og «forrige dag» hører hjemme på
+              datosidene. */}
+          <div className="mt-6">
+            <CalendarStrip
+              start={stripStart}
+              count={7}
+              highlight={today}
+              tomorrow={tomorrow}
+              showWeekday
+            />
           </div>
 
           <p className="mt-6 text-center">
@@ -242,7 +214,7 @@ export default function HomePage() {
               href="/denne-uken"
               className="font-semibold text-coral-deep underline underline-offset-4"
             >
-              Se hele uken →
+              Se hele denne uken →
             </Link>
           </p>
         </section>

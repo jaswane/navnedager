@@ -36,6 +36,40 @@ describe("canonical-domene er uendret", () => {
   });
 });
 
+describe("ruter er uendret", () => {
+  const read = (p: string) =>
+    readFileSync(new URL(p, import.meta.url), "utf8");
+
+  it("/i-morgen finnes fortsatt, er serverrendret og dekker søkeintensjonen", () => {
+    const page = read("../../app/i-morgen/page.tsx");
+    expect(page).toContain("Hvem har navnedag i morgen?");
+    expect(page).toContain('path: "/i-morgen"');
+    expect(page).not.toContain('"use client"');
+  });
+
+  it("/denne-uken finnes fortsatt og representerer mandag–søndag", () => {
+    const page = read("../../app/denne-uken/page.tsx");
+    expect(page).toContain('path: "/denne-uken"');
+    expect(page).toContain("Navnedager denne uken");
+    // ISO-uke: mandag som start
+    expect(page).toContain("1 - isoDow");
+    expect(page).not.toContain('"use client"');
+  });
+
+  it("forsiden lenker til begge rutene", () => {
+    const home = read("../../app/page.tsx");
+    expect(home).toContain('href="/denne-uken"');
+    const strip = read("../../components/CalendarStrip.tsx");
+    expect(strip).toContain('href="/i-morgen"');
+  });
+
+  it("sitemap inneholder både /i-morgen og /denne-uken", () => {
+    const sitemap = read("../../app/sitemap.ts");
+    expect(sitemap).toContain('"/i-morgen"');
+    expect(sitemap).toContain('"/denne-uken"');
+  });
+});
+
 describe("sitemap-omfang er uendret", () => {
   it("dekker statiske sider + 12 måneder + 366 datoer + alle navn", () => {
     const staticPaths = 10;
