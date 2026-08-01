@@ -66,6 +66,61 @@ export function daysFrom(
   });
 }
 
+function isLeapYear(year: number): boolean {
+  return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+}
+
+export type NameDayYearInfo = {
+  /** Inneværende år (Europe/Oslo). */
+  currentYear: number;
+  /** Finnes datoen i inneværende år? Kun false for 29. februar i vanlig år. */
+  existsThisYear: boolean;
+  /** Ukedag og ISO-uke i inneværende år (kun gyldig når existsThisYear). */
+  weekday: string;
+  week: number;
+  /** Året for neste forekomst (kan være inneværende år). */
+  nextYear: number;
+  nextWeekday: string;
+  nextWeek: number;
+  /** True når neste forekomst ikke er i inneværende år. */
+  nextIsLaterYear: boolean;
+};
+
+/**
+ * Ukedag/ukenummer for en fast kalenderdato, samt neste forekomst.
+ * Ren funksjon – dagens dato sendes inn, slik at den kan testes og
+ * server-rendres deterministisk.
+ */
+export function getNameDayYearInfo(
+  month: number,
+  day: number,
+  today: { year: number; month: number; day: number }
+): NameDayYearInfo {
+  const leapDay = month === 2 && day === 29;
+  const existsThisYear = !leapDay || isLeapYear(today.year);
+
+  // Neste forekomst: i år hvis datoen ikke er passert, ellers neste år.
+  // 29. februar hopper videre til nærmeste skuddår.
+  let nextYear = today.year;
+  if (month < today.month || (month === today.month && day < today.day)) {
+    nextYear += 1;
+  }
+  if (leapDay) {
+    while (!isLeapYear(nextYear)) nextYear += 1;
+  }
+
+  return {
+    currentYear: today.year,
+    existsThisYear,
+    weekday: existsThisYear ? weekdayName(today.year, month, day) : "",
+    week: existsThisYear ? isoWeek(today.year, month, day) : 0,
+    nextYear,
+    nextWeekday: weekdayName(nextYear, month, day),
+    nextWeek: isoWeek(nextYear, month, day),
+    nextIsLaterYear: nextYear !== today.year,
+  };
+}
+
 /** Velger forsidens hovedstatus ut fra dagens navn og datatilgjengelighet. */
 export function getNameDaySpotlightKey(
   names: string[],

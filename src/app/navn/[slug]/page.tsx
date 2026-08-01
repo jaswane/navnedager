@@ -2,17 +2,23 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
-import CurrentYearDate from "@/components/CurrentYearDate";
 import LinkCard from "@/components/LinkCard";
 import { DatePage, DeskCalendar, Star } from "@/components/illustrations";
 import Link from "next/link";
 import { allNames, nameBySlug, relatedNames } from "@/lib/navnedager";
 import { navnetoppenLink } from "@/lib/navnetoppen";
 import { formatDayMonth, monthName, monthNameCap, dateSlug } from "@/lib/dates";
+import { getNameDayYearInfo } from "@/lib/nameday-context";
+import { getServerNameDayContext } from "@/lib/nameday-context.server";
+import { nameMetaDescription } from "@/lib/name-description";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 
 export const dynamicParams = false;
+
+// Ukedag/ukenummer er årsavhengig og server-rendres. ISR sørger for at
+// sidene fornyes, slik at teksten ikke blir stående på fjorårets ukedag.
+export const revalidate = 3600;
 
 export function generateStaticParams() {
   return allNames().map((e) => ({ slug: e.slug }));
@@ -25,9 +31,15 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const entry = nameBySlug(slug);
   if (!entry) return {};
   const date = formatDayMonth(entry.month, entry.day);
+  const others = relatedNames(entry).map((r) => r.name);
   return buildMetadata({
     title: `${entry.name} har navnedag ${date}`,
-    description: `${entry.name} har navnedag ${date}. Se hvilken dato ${entry.name} har navnedag, og hvilke andre navn som deler dagen.`,
+    description: nameMetaDescription(
+      entry.name,
+      entry.month,
+      entry.day,
+      others
+    ),
     path: `/navn/${entry.slug}`,
   });
 }
@@ -41,6 +53,14 @@ export default async function NamePage({ params }: Params) {
   const related = relatedNames(entry);
   const month = monthName(entry.month);
   const navnetoppen = navnetoppenLink(entry.name, entry.slug);
+
+  // Årsavhengig info server-rendres (Europe/Oslo via dagskonteksten).
+  const ctx = getServerNameDayContext();
+  const yearInfo = getNameDayYearInfo(entry.month, entry.day, {
+    year: ctx.year,
+    month: ctx.today.month,
+    day: ctx.today.day,
+  });
 
   const crumbs = [
     { name: "Forside", path: "/" },
@@ -82,10 +102,26 @@ export default async function NamePage({ params }: Params) {
         </p>
       </div>
 
-      {/* Rolig informasjonsboks */}
-      <p className="infobox mx-auto mt-7 max-w-md text-center text-ink-soft">
-        <CurrentYearDate month={entry.month} day={entry.day} />
-      </p>
+      {/* Rolig informasjonsboks – server-rendret, finnes i HTML før klient-JS */}
+      <div className="infobox mx-auto mt-7 max-w-md text-center text-ink-soft">
+        {yearInfo.existsThisYear ? (
+          <p>
+            I {yearInfo.currentYear} faller {date} på en{" "}
+            <strong className="text-ink">{yearInfo.weekday}</strong>, i uke{" "}
+            <strong className="text-ink">{yearInfo.week}</strong>.
+          </p>
+        ) : (
+          <p>
+            {date} finnes ikke i {yearInfo.currentYear} – det er ikke skuddår.
+          </p>
+        )}
+        {yearInfo.nextIsLaterYear && (
+          <p className="mt-1">
+            Neste navnedag er {yearInfo.nextWeekday} {date} {yearInfo.nextYear},
+            i uke {yearInfo.nextWeek}.
+          </p>
+        )}
+      </div>
 
       {related.length > 0 && (
         <p className="mt-5 text-center text-ink-soft">
