@@ -13,6 +13,8 @@ import {
 } from "@/components/illustrations";
 import { addDays, monthName, monthNameCap, cap, dateSlug } from "@/lib/dates";
 import { getServerNameDayContext } from "@/lib/nameday-context.server";
+import { daysFrom } from "@/lib/nameday-context";
+import { nameToSlug } from "@/lib/navnedager";
 import { nameDaySpotlights } from "@/lib/nameday-spotlight";
 import { buildMetadata } from "@/lib/seo";
 import { faqSchema, webPageSchema, itemListSchema } from "@/lib/schema";
@@ -70,10 +72,15 @@ export default function HomePage() {
   // Kalenderstripe sentrert rundt i dag (3 før, i dag, 3 etter)
   const stripStart = addDays(today.year, today.month, today.day, -3);
 
-  const next7 = ctx.upcomingSevenDays.map((d) => ({
-    name: d.names.join(", ") || "Ingen navnedag",
-    path: `/dato/${dateSlug(d.month, d.day)}`,
-  }));
+  // Strukturert data bygges fra NØYAKTIG de dagene stripen viser, og ett
+  // listeelement per synlig navn. Ingen navn eller datoer kun i schema.
+  const stripDays = daysFrom(stripStart.year, stripStart.month, stripStart.day, 7);
+  const stripItems = stripDays.flatMap((d) =>
+    d.names.map((n) => ({
+      name: n,
+      path: `/navn/${nameToSlug(n) ?? ""}`,
+    }))
+  );
 
   return (
     <>
@@ -86,7 +93,7 @@ export default function HomePage() {
             path: "/",
           }),
           faqSchema(FAQS),
-          itemListSchema({ name: "Navnedager de neste 7 dagene", items: next7 }),
+          itemListSchema({ name: "Navnedager denne uken", items: stripItems }),
         ]}
       />
 

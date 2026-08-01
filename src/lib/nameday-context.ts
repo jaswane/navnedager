@@ -49,6 +49,23 @@ function dayInfo(year: number, month: number, day: number): DayInfo {
   return { isoDate: isoDate(year, month, day), year, month, day, names: namesForDate(month, day) };
 }
 
+/**
+ * Dagene en kalenderstripe viser, fra og med (year, month, day).
+ * Brukes både til strukturert data og som fasit for hva som faktisk vises,
+ * slik at schema og synlig innhold ikke kan komme ut av synk.
+ */
+export function daysFrom(
+  year: number,
+  month: number,
+  day: number,
+  count: number
+): DayInfo[] {
+  return Array.from({ length: count }, (_, i) => {
+    const d = addDays(year, month, day, i);
+    return dayInfo(d.year, d.month, d.day);
+  });
+}
+
 /** Velger forsidens hovedstatus ut fra dagens navn og datatilgjengelighet. */
 export function getNameDaySpotlightKey(
   names: string[],

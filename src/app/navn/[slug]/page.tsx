@@ -7,6 +7,7 @@ import LinkCard from "@/components/LinkCard";
 import { DatePage, DeskCalendar, Star } from "@/components/illustrations";
 import Link from "next/link";
 import { allNames, nameBySlug, relatedNames } from "@/lib/navnedager";
+import { navnetoppenLink } from "@/lib/navnetoppen";
 import { formatDayMonth, monthName, monthNameCap, dateSlug } from "@/lib/dates";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
@@ -39,6 +40,7 @@ export default async function NamePage({ params }: Params) {
   const date = formatDayMonth(entry.month, entry.day);
   const related = relatedNames(entry);
   const month = monthName(entry.month);
+  const navnetoppen = navnetoppenLink(entry.name, entry.slug);
 
   const crumbs = [
     { name: "Forside", path: "/" },
@@ -115,11 +117,12 @@ export default async function NamePage({ params }: Params) {
           label={`Bla til ${monthNameCap(entry.month)}`}
           icon={<DeskCalendar className="h-6 w-7" />}
         />
+        {/* Kun verifiserte Navnetoppen-sider dyplenkes; ellers nøytral oversikt. */}
         <LinkCard
-          href={`https://navnetoppen.no/navn/${entry.slug}`}
+          href={navnetoppen.href}
           external
-          label={`Se navnestatistikk for ${entry.name}`}
-          sublabel="på Navnetoppen.no"
+          label={navnetoppen.label}
+          sublabel={navnetoppen.sublabel}
           icon={<Star className="h-5 w-5" />}
         />
       </div>
