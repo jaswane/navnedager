@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import type { SearchItem } from "@/lib/navnedager";
-import { slugify } from "@/lib/navnedager";
+import { slugify, normalizeName } from "@/lib/navnedager";
 import { trackSearch } from "@/lib/analytics";
 
 type Props = {
@@ -21,17 +21,21 @@ export default function NameSearch({ items, autoFocus }: Props) {
   const blurTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const matches = useMemo(() => {
-    const q = slugify(query.trim());
-    if (q.length < 1) return [];
+    const trimmed = query.trim();
+    if (trimmed.length < 1) return [];
+    // Primærnøkkel: normalisert navn (bevarer æ/ø/å). Sekundær: tolerant slug.
+    const nq = normalizeName(trimmed);
+    const sq = slugify(trimmed);
+    const exact: SearchItem[] = [];
     const starts: SearchItem[] = [];
-    const contains: SearchItem[] = [];
+    const tolerant: SearchItem[] = [];
     for (const item of items) {
-      const s = item.s;
-      if (s.startsWith(q)) starts.push(item);
-      else if (s.includes(q)) contains.push(item);
-      if (starts.length >= 8) break;
+      if (item.k === nq) exact.push(item);
+      else if (item.k.startsWith(nq)) starts.push(item);
+      else if (sq.length > 0 && (item.s.startsWith(sq) || item.s.includes(sq)))
+        tolerant.push(item);
     }
-    return [...starts, ...contains].slice(0, 8);
+    return [...exact, ...starts, ...tolerant].slice(0, 8);
   }, [items, query]);
 
   const go = (item: SearchItem) => {

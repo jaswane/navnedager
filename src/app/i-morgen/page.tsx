@@ -3,17 +3,9 @@ import type { Metadata } from "next";
 import CalendarStrip from "@/components/CalendarStrip";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import JsonLd from "@/components/JsonLd";
-import {
-  osloToday,
-  addDays,
-  isoWeek,
-  monthName,
-  cap,
-  weekdayName,
-  dateSlug,
-} from "@/lib/dates";
+import { isoWeek, monthName, cap, weekdayName, dateSlug } from "@/lib/dates";
 import { Tomorrow } from "@/components/illustrations";
-import { namesForDate } from "@/lib/navnedager";
+import { getServerNameDayContext } from "@/lib/nameday-context.server";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema } from "@/lib/schema";
 
@@ -27,9 +19,10 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function TomorrowPage() {
-  const today = osloToday();
-  const tomorrow = addDays(today.year, today.month, today.day, 1);
-  const names = namesForDate(tomorrow.month, tomorrow.day);
+  const ctx = getServerNameDayContext();
+  const today = { year: ctx.year, month: ctx.today.month, day: ctx.today.day };
+  const tomorrow = ctx.tomorrow;
+  const names = ctx.tomorrow.names;
   const week = isoWeek(tomorrow.year, tomorrow.month, tomorrow.day);
   const weekday = weekdayName(tomorrow.year, tomorrow.month, tomorrow.day);
 

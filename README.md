@@ -14,8 +14,17 @@ typografi, mye luft og et eget illustrasjonssystem.
 - All navnedagsdata ligger lokalt i `src/data/navnedager.json`
 - Vercel-kompatibelt
 
-«I dag / i morgen / denne uken» bruker ISR (`revalidate = 3600`) slik at datoen
-alltid er korrekt, mens alt annet er forhåndsgenerert som statisk HTML.
+«I dag / i morgen / denne uken» bruker ISR (`revalidate = 3600`), mens alt annet
+er forhåndsgenerert som statisk HTML.
+
+**Slik virker revalideringen (presist):** etter 3600 sekunder blir siden
+_kvalifisert_ for regenerering – den regenereres ikke av seg selv. Den første
+forespørselen etter at siden er blitt stale kan fortsatt få servert den gamle
+versjonen mens regenereringen skjer i bakgrunnen (stale-while-revalidate);
+neste forespørsel får den nye versjonen. I praksis betyr det at siden kort tid
+etter norsk midnatt kan vise gårsdagens navnedager, og at forsinkelsen avhenger
+av trafikk. Vi lover derfor ikke at siden alltid er oppdatert nøyaktig innen én
+time etter midnatt.
 
 ## Kom i gang
 

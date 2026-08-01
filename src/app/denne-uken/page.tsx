@@ -6,7 +6,6 @@ import PageHeader from "@/components/PageHeader";
 import JsonLd from "@/components/JsonLd";
 import { DeskCalendar } from "@/components/illustrations";
 import {
-  osloToday,
   addDays,
   isoWeek,
   weekdayName,
@@ -15,6 +14,7 @@ import {
   dateSlug,
 } from "@/lib/dates";
 import { namesForDate } from "@/lib/navnedager";
+import { getServerNameDayContext } from "@/lib/nameday-context.server";
 import { buildMetadata } from "@/lib/seo";
 import { webPageSchema, breadcrumbSchema, itemListSchema } from "@/lib/schema";
 
@@ -28,7 +28,8 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function ThisWeekPage() {
-  const today = osloToday();
+  const ctx = getServerNameDayContext();
+  const today = { year: ctx.year, month: ctx.today.month, day: ctx.today.day };
   const todayDate = new Date(Date.UTC(today.year, today.month - 1, today.day));
   const isoDow = todayDate.getUTCDay() || 7;
   const monday = addDays(today.year, today.month, today.day, 1 - isoDow);

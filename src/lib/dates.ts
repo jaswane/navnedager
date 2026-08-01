@@ -97,15 +97,21 @@ export function weekdayName(year: number, month: number, day: number): string {
   return WEEKDAYS_NB[d.getUTCDay()];
 }
 
-/** Dagens dato i Europa/Oslo, uavhengig av brukerens tidssone. */
-export function osloToday(): { year: number; month: number; day: number } {
+/**
+ * Dagens dato i Europa/Oslo, uavhengig av brukerens/serverens tidssone.
+ * Tar valgfri `date` slik at logikken kan testes deterministisk og
+ * en preview-dato kan injiseres. Bruker aldri UTC-datoen som norsk dag.
+ */
+export function osloToday(
+  date: Date = new Date()
+): { year: number; month: number; day: number } {
   const fmt = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Oslo",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
-  const parts = fmt.formatToParts(new Date());
+  const parts = fmt.formatToParts(date);
   const get = (t: string) => Number(parts.find((p) => p.type === t)?.value);
   return { year: get("year"), month: get("month"), day: get("day") };
 }

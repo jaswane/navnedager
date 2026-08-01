@@ -16,6 +16,15 @@ export type DayEntry = {
   names: string[];
 };
 
+/**
+ * Normaliserer et navn for søk uten å ødelegge norske bokstaver.
+ * Bevarer æ/ø/å (NFC + nb-NO småbokstaver). Brukes som primær søkenøkkel;
+ * slugify() er bare en tolerant sekundærnøkkel.
+ */
+export function normalizeName(value: string): string {
+  return value.trim().toLocaleLowerCase("nb-NO").normalize("NFC");
+}
+
 /** Transliterer norske/diakritiske tegn til URL-trygg ASCII. */
 export function slugify(value: string): string {
   return value
@@ -106,7 +115,8 @@ export function relatedNames(entry: NameEntry): NameEntry[] {
 /** Lett datasett til klientsøk: navn + slug + dato-slug + lesbar dato. */
 export type SearchItem = {
   n: string; // navn
-  s: string; // navn-slug
+  s: string; // navn-slug (URL + tolerant sekundærnøkkel)
+  k: string; // normalisert navn (primær søkenøkkel, bevarer æøå)
   d: string; // dato-slug
   l: string; // lesbar dato, f.eks. "9. juni"
 };
@@ -115,6 +125,7 @@ export function searchIndex(): SearchItem[] {
   return nameIndex.map((e) => ({
     n: e.name,
     s: e.slug,
+    k: normalizeName(e.name),
     d: dateSlug(e.month, e.day),
     l: `${e.day}. ${monthName(e.month)}`,
   }));

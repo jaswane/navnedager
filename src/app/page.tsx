@@ -11,17 +11,9 @@ import {
   Today,
   Tomorrow,
 } from "@/components/illustrations";
-import {
-  osloToday,
-  addDays,
-  isoWeek,
-  monthName,
-  monthNameCap,
-  weekdayName,
-  cap,
-  dateSlug,
-} from "@/lib/dates";
-import { namesForDate } from "@/lib/navnedager";
+import { addDays, monthName, monthNameCap, cap, dateSlug } from "@/lib/dates";
+import { getServerNameDayContext } from "@/lib/nameday-context.server";
+import { nameDaySpotlights } from "@/lib/nameday-spotlight";
 import { buildMetadata } from "@/lib/seo";
 import { faqSchema, webPageSchema, itemListSchema } from "@/lib/schema";
 
@@ -65,23 +57,23 @@ const CTAS = [
 ];
 
 export default function HomePage() {
-  const today = osloToday();
-  const tomorrow = addDays(today.year, today.month, today.day, 1);
-  const todayNames = namesForDate(today.month, today.day);
-  const tomorrowNames = namesForDate(tomorrow.month, tomorrow.day);
-  const week = isoWeek(today.year, today.month, today.day);
-  const weekday = weekdayName(today.year, today.month, today.day);
+  // Én sentral, preview-bevisst dagskontekst styrer all dagsavhengig visning.
+  const ctx = getServerNameDayContext();
+  const today = { year: ctx.year, month: ctx.today.month, day: ctx.today.day };
+  const tomorrow = { month: ctx.tomorrow.month, day: ctx.tomorrow.day };
+  const todayNames = ctx.today.names;
+  const tomorrowNames = ctx.tomorrow.names;
+  const week = ctx.todayWeek;
+  const weekday = ctx.todayWeekday;
+  const spotlight = nameDaySpotlights[ctx.spotlight];
 
   // Kalenderstripe sentrert rundt i dag (3 før, i dag, 3 etter)
   const stripStart = addDays(today.year, today.month, today.day, -3);
 
-  const next7 = Array.from({ length: 7 }, (_, i) => {
-    const d = addDays(today.year, today.month, today.day, i);
-    return {
-      name: namesForDate(d.month, d.day).join(", ") || "Ingen navnedag",
-      path: `/dato/${dateSlug(d.month, d.day)}`,
-    };
-  });
+  const next7 = ctx.upcomingSevenDays.map((d) => ({
+    name: d.names.join(", ") || "Ingen navnedag",
+    path: `/dato/${dateSlug(d.month, d.day)}`,
+  }));
 
   return (
     <>
@@ -99,9 +91,10 @@ export default function HomePage() {
       />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <p className="mt-6 text-center font-display text-2xl font-semibold text-ink sm:text-3xl">
+        {/* Stabil H1 – endrer seg ikke med dagens navn (SEO + tilgjengelighet). */}
+        <h1 className="mt-6 text-center font-display text-2xl font-semibold text-ink sm:text-3xl">
           Hvem har navnedag i dag?
-        </p>
+        </h1>
 
         {/* HERO – plakat */}
         <section className="relative mt-4 overflow-hidden rounded-[2rem] bg-hero text-cream shadow-[0_20px_50px_-25px_rgba(36,111,115,0.7)]">
@@ -139,7 +132,15 @@ export default function HomePage() {
                 <Today className="h-4 w-4" />
                 {today.day}. {monthName(today.month)}
               </p>
-              <h1 className="mt-2 font-display font-black uppercase leading-[0.9] tracking-tight">
+              {/* Dagens navn – semantisk h2 under den stabile h1. */}
+              <h2
+                className="mt-2 font-display font-black uppercase leading-[0.9] tracking-tight"
+                aria-label={
+                  todayNames.length > 0
+                    ? todayNames.join(" og ")
+                    : spotlight.title
+                }
+              >
                 {todayNames.length > 0 ? (
                   todayNames.map((n, i) => (
                     <span key={n} className="block text-5xl sm:text-7xl lg:text-8xl">
@@ -151,12 +152,12 @@ export default function HomePage() {
                   ))
                 ) : (
                   <span className="block text-4xl sm:text-6xl">
-                    Ingen har navnedag i dag
+                    {spotlight.title}
                   </span>
                 )}
-              </h1>
+              </h2>
               <p className="mt-4 text-xl font-semibold text-cream/95">
-                {todayNames.length > 0 ? "har navnedag i dag" : `Den ${today.day}. ${monthName(today.month)} står ingen navn oppført.`}
+                {todayNames.length > 0 ? "har navnedag i dag" : spotlight.description}
               </p>
               <p className="mt-1 text-sm text-cream/80">
                 {cap(weekday)} {today.day}. {monthName(today.month)} {today.year} · Uke{" "}
